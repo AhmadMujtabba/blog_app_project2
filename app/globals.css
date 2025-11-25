@@ -1,26 +1,83 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
-}
+} */
 
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
+} */
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
-body {
+/* body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+} */
+
+.main{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  background-color: rgb(213, 222, 231);
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+}
+.form-box{
+  height: fit-content;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 2%;
+  font-size: 20px;
+  color: black;
+  background-color: rgb(255, 255, 255);
+}
+
+.form-btn{
+  width: 100%;
+  margin: 0;
+  color: white;
+  background-color:rgb(1, 93, 179) ;
+  padding:2%;
+  cursor:grab;
+}
+.btn-div{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  margin-top: 2%;
+}
+.input{
+  width: 100%;
+  padding: 2px;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+.form-bottom{
+  font-size: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.form-anchor{
+  color: rgb(1, 93, 179);
+}
+.form-heading{
+  font-size: 30px;
+  font-weight:bolder;
+  justify-items: center;
 }
