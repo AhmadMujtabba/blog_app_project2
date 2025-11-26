@@ -8,6 +8,7 @@ interface ChildProp {
 interface User {
   id: string;
   name: string;
+  email: string;
 }
 interface AuthContextType {
   user: User;
@@ -17,7 +18,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: ChildProp) => {
-  const [user, setUser] = useState<User>({ id: "", name: "" });
+  const [user, setUser] = useState<User>({ id: "", name: "" ,email:""});
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       {children}

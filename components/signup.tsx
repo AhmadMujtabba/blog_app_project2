@@ -60,7 +60,7 @@ const Signup = () => {
               className="input"
               onChange={(e) => setName(e.target.value)}
               required
-            ></input>
+            />
           </div>
           <br></br>
           <div>
@@ -73,7 +73,7 @@ const Signup = () => {
               className="input"
               onChange={(e) => setEmail(e.target.value)}
               required
-            ></input>
+            />
           </div>
           <br></br>
           <div>

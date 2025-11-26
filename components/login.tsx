@@ -1,15 +1,49 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AuthContext } from "@/context/auth.context";
+import { useContext } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState<string | null>("");
   const [password, setPassword] = useState<string | null>("");
 
+  const auth = useContext(AuthContext);
+
+  const router = useRouter();
+
+  if (!auth) return null;
+  const { user, setUser } = auth;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(email, password);
+    const user_raw = localStorage.getItem("blog-user") || "[]";
+    const user_data = JSON.parse(user_raw);
+    const found_user = user_data.find(
+      (user: { email: string; password: string }) =>
+        user.email == email && user.password == password
+    );
+    if (found_user) {
+      setUser({
+        id: found_user.id,
+        name: found_user.name,
+        email: found_user.email,
+      });
+      if (user.id) {
+        router.push("/posts");
+        console.log(user);
+      }
+    } else {
+      alert("Authentication Failed !");
+    }
   };
+
+  useEffect(() => {
+    if (user.id) {
+      router.push("/posts");
+    }
+  }, [user]);
 
   return (
     <div className="main">

@@ -8,14 +8,8 @@ interface LayoutProp {
 
 export default function Layout({ children }: LayoutProp) {
   return (
-    <AuthProvider>
-      <html lang="en">
-        <body>
           <div className="main-posts">
             {children}
           </div>
-        </body>
-      </html>
-    </AuthProvider>
   );
 }

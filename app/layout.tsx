@@ -1,9 +1,16 @@
 import "./globals.css";
+import { ReactNode } from "react";
+import { AuthProvider } from "@/context/auth.context";
 
-export default function RootLayout({ children }) {
+interface ChildProp {
+  readonly children: ReactNode;
+}
+export default function RootLayout({ children }: ChildProp) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

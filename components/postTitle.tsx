@@ -1,6 +1,10 @@
 import React from 'react';
 
-const PostTitle = ({title}) => {
+interface TitleProp{
+    title:string
+}
+
+const PostTitle = ({title}:TitleProp) => {
     return (
         <div className='post-title'>
             <p>{title}</p>

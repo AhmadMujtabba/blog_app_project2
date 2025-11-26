@@ -19,11 +19,17 @@ const Page = () => {
 
   const auth = useContext(AuthContext);
   if (!auth) return null;
-  const { user } = auth;
+  const { user, setUser } = auth;
+
+  const handleLogout = () => {
+    setUser({ id: "", name: "", email: "" });
+    router.push("/");
+  };
 
   useEffect(() => {
     if (!user.id) {
-      // router.push("/");
+      router.push("/");
+      return;
     }
     const getPost = async () => {
       try {
@@ -37,7 +43,7 @@ const Page = () => {
       }
     };
     getPost();
-  }, []);
+  }, [user.id]);
 
   if (loading) {
     return (
@@ -51,7 +57,10 @@ const Page = () => {
     <>
       <div className="post-topbar">
         <button className="add-btn">Add Post</button>
-        <button className="logout-btn">Logout</button>
+        <p>Hello {user.email}</p>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
       {post.map((post) => {
         return <Post key={post.id} title={post.title} content={post.body} />;
