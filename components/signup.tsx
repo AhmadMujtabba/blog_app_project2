@@ -2,33 +2,47 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+interface NewUser {
+  name: string;
+  password: string;
+  email: string;
+  id: string;
+}
+interface User {
+  name: string;
+  password: string;
+  email: string;
+}
+
 const Signup = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
+
   const addUser = () => {
-    const newUser = {
+    const newUser: NewUser = {
       name: name,
       password: password,
       email: email,
-      id: Date.now(),
+      id: String(Date.now()),
     };
-    const users = JSON.parse(localStorage.getItem("blog-user"));
+    const users: User[] = JSON.parse(localStorage.getItem("blog-user") || "[]");
     users.push(newUser);
     localStorage.setItem("blog-user", JSON.stringify(users));
     alert(`New user created with email ${newUser.email} and id ${newUser.id}`);
     router.push("/");
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!localStorage.getItem("blog-user")) {
       localStorage.setItem("blog-user", JSON.stringify([]));
-      addUser();
-    } else {
-      addUser();
     }
+    addUser();
   };
+
   return (
     <div className="main">
       <div className="form-box">
