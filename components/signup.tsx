@@ -3,17 +3,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-interface NewUser {
-  name: string;
-  password: string;
-  email: string;
+export type User = {
   id: string;
-}
-interface User {
   name: string;
-  password: string;
   email: string;
-}
+  password: string;
+};
 
 const Signup = () => {
   const router = useRouter();
@@ -22,10 +17,10 @@ const Signup = () => {
   const [name, setName] = useState<string>("");
 
   const addUser = () => {
-    const newUser: NewUser = {
-      name: name,
-      password: password,
-      email: email,
+    const newUser: User = {
+      name,
+      password,
+      email,
       id: String(Date.now()),
     };
     const users: User[] = JSON.parse(localStorage.getItem("blog-user") || "[]");

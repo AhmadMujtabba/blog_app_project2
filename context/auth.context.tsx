@@ -1,27 +1,21 @@
 "use client";
-import { createContext, useState } from "react";
-import { ReactNode } from "react";
+import { User } from "@/components/signup";
+import { createContext, useState, useMemo, ReactNode } from "react";
 
-interface ChildProp {
-  children: ReactNode;
-}
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+type SafeUser = Omit<User, "password">;
+
 interface AuthContextType {
-  user: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  user: SafeUser | undefined;
+  setUser: React.Dispatch<React.SetStateAction<SafeUser | undefined>>;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-export const AuthProvider = ({ children }: ChildProp) => {
-  const [user, setUser] = useState<User>({ id: "", name: "" ,email:""});
-  return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<SafeUser | undefined>(undefined);
+  const value = useMemo(() => ({ user, setUser }), [user, setUser]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -1,9 +1,8 @@
 "use client";
-import React, { use, useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/auth.context";
-import { useContext } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState<string | null>("");
@@ -14,7 +13,8 @@ const Login = () => {
   const router = useRouter();
 
   if (!auth) return null;
-  const { user, setUser } = auth;
+
+  const { setUser } = auth;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,20 +30,11 @@ const Login = () => {
         name: found_user.name,
         email: found_user.email,
       });
-      if (user.id) {
-        router.push("/posts");
-        console.log(user);
-      }
+      router.push("/posts");
     } else {
       alert("Authentication Failed !");
     }
   };
-
-  useEffect(() => {
-    if (user.id) {
-      router.push("/posts");
-    }
-  }, [user]);
 
   return (
     <div className="main">
