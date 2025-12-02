@@ -1,26 +1,26 @@
-import React from "react";
+import { FormEvent, useState } from "react";
 
-interface CloseModalFn {
-  CloseModal: () => void;
-  AddPost: () => void;
-  AddTitle: (value: string) => void;
-  AddBody: (value: string) => void;
+interface AddPostModalProps {
+  closeModal: () => void;
+  addPost: ({ title, body }: { title: string; body: string }) => void;
 }
 
-const AddPostModal = ({
-  CloseModal,
-  AddPost,
-  AddTitle,
-  AddBody,
-}: CloseModalFn) => {
+const AddPostModal = ({ closeModal, addPost }: AddPostModalProps) => {
+  const [userPost, setUserPost] = useState({ title: "", body: "" });
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (userPost.title && userPost.body) addPost(userPost);
+    else alert("Fields should not be empty !");
+  };
+
   return (
-    <>
-      <div></div>
+    <div className="modal-container">
       <div className="modal-box">
         <div className="form-heading">
           <p>Add Post</p>
         </div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="title">Title</label>
             <br></br>
@@ -29,7 +29,9 @@ const AddPostModal = ({
               name="title"
               id="title"
               className="input"
-              onChange={(e) => AddTitle(e.target.value)}
+              onChange={(e) =>
+                setUserPost({ ...userPost, title: e.target.value })
+              }
               required
             ></input>
           </div>
@@ -41,28 +43,25 @@ const AddPostModal = ({
               name="content"
               id="content"
               className="input"
-              onChange={(e) => AddBody(e.target.value)}
+              onChange={(e) =>
+                setUserPost({ ...userPost, body: e.target.value })
+              }
+              rows={10}
               required
             ></textarea>
           </div>
           <br></br>
           <div className="btn-div">
-            <button
-              className="add-btn"
-              onClick={(e) => {
-                e.preventDefault();
-                AddPost();
-              }}
-            >
+            <button className="add-btn" type="submit">
               Add
             </button>
-            <button className="logout-btn" onClick={CloseModal}>
+            <button className="logout-btn" onClick={closeModal}>
               Close
             </button>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

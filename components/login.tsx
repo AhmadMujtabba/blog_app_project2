@@ -2,7 +2,7 @@
 import React, { useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "@/context/auth.context";
+import { AuthContext } from "@/context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState<string | null>("");
@@ -18,17 +18,17 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const user_raw = localStorage.getItem("blog-user") || "[]";
-    const user_data = JSON.parse(user_raw);
-    const found_user = user_data.find(
+    const userRawData = localStorage.getItem("blog-user") || "[]";
+    const userData = JSON.parse(userRawData);
+    const foundUser = userData.find(
       (user: { email: string; password: string }) =>
         user.email == email && user.password == password
     );
-    if (found_user) {
+    if (foundUser) {
       setUser({
-        id: found_user.id,
-        name: found_user.name,
-        email: found_user.email,
+        id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
       });
       router.push("/posts");
     } else {

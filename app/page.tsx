@@ -1,8 +1,5 @@
-import Login from "@/components/login";
-import { AuthProvider } from "@/context/auth.context";
+import Login from "@/components/Login";
 
 export default function Home() {
-  return (
-      <Login />
-  );
+  return <Login />;
 }

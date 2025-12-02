@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@/components/signup";
+import { User } from "@/components/Signup";
 import { createContext, useState, useMemo, ReactNode } from "react";
 
 type SafeUser = Omit<User, "password">;

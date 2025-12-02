@@ -1,32 +1,35 @@
+import { FormEvent, useState } from "react";
 
-
-interface CloseModalFn {
-  CloseModal: () => void;
-  EditPost: () => void;
-  AddTitle: (value: string) => void;
-  AddBody: (value: string) => void;
-  Title: string;
-  Body: string;
-  PostId: number | null;
+interface EditPostModalProps {
+  closeModal: () => void;
+  editPost: ({ title, body }: { title: string; body: string }) => void;
+  postData: { title: string; body: string; id: number };
 }
 
 const EditPostModal = ({
-  CloseModal,
-  EditPost,
-  AddTitle,
-  AddBody,
-  Title,
-  Body,
-  PostId,
-}: CloseModalFn) => {
+  closeModal,
+  editPost,
+  postData,
+}: EditPostModalProps) => {
+  const [post, setPost] = useState({
+    title: postData.title,
+    body: postData.body,
+  });
+
+  const handleEdit = (e: FormEvent) => {
+    e.preventDefault();
+    if (post.title && post.body)
+      editPost({ title: post.title, body: post.body });
+    else alert("Fields should not be empty");
+  };
+
   return (
-    <>
-      <div></div>
+    <div className="modal-container">
       <div className="modal-box">
         <div className="form-heading">
           <p>Edit Post</p>
         </div>
-        <form>
+        <form onSubmit={handleEdit}>
           <div>
             <label htmlFor="title">Title</label>
             <br></br>
@@ -35,8 +38,8 @@ const EditPostModal = ({
               name="title"
               id="title"
               className="input"
-              value={Title}
-              onChange={(e) => AddTitle(e.target.value)}
+              value={post.title}
+              onChange={(e) => setPost({ ...post, title: e.target.value })}
               required
             ></input>
           </div>
@@ -48,29 +51,24 @@ const EditPostModal = ({
               name="content"
               id="content"
               className="input"
-              value={Body}
-              onChange={(e) => AddBody(e.target.value)}
+              value={post.body}
+              onChange={(e) => setPost({ ...post, body: e.target.value })}
+              rows={10}
               required
             ></textarea>
           </div>
           <br></br>
           <div className="btn-div">
-            <button
-              className="add-btn"
-              onClick={(e) => {
-                e.preventDefault();
-                EditPost();
-              }}
-            >
+            <button className="add-btn" type="submit">
               Update
             </button>
-            <button className="logout-btn" onClick={CloseModal}>
+            <button className="logout-btn" onClick={closeModal}>
               Close
             </button>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -46,7 +46,8 @@
 }
 
 .modal-box {
-  width: 50%;
+  width: 40%;
+  height: fit-content;
   border: 1px solid black;
   border-radius: 20px;
   padding: 1%;
@@ -54,6 +55,7 @@
   color: black;
   background-color: rgb(255, 255, 255);
   margin-bottom: 20px;
+  align-self: center;
 }
 
 .form-btn {
@@ -102,7 +104,6 @@
   background-color: rgb(213, 222, 231);
   justify-content: flex-start;
   align-items: center;
-  padding-top: 5%;
 }
 .post-body {
   background-color: white;
@@ -124,6 +125,7 @@
   display: flex;
   justify-content: space-between;
   padding-left: 10px;
+  padding-top: 15px;
 }
 .add-btn {
   height: fit-content;
@@ -186,4 +188,14 @@
   background-color: darkgreen;
   color: white;
   border-radius: 10px;
+}
+
+.modal-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(226, 226, 226, 0.5);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }

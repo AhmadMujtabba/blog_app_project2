@@ -1,22 +1,22 @@
 import { Trash, Pencil } from "lucide-react";
-import PostTitle from "./postTitle";
-import PostContent from "./postContent";
+import PostContent from "./PostContent";
+import PostTitle from "./PostTitle";
 
 interface Post {
   title: string;
   content: string;
-  postid: number;
-  userid: number;
+  userName: string;
+  id: number;
   owner: boolean;
-  editPost: (postid: number) => void;
-  deletePost: (postid: number) => void;
+  editPost: (id: number) => void;
+  deletePost: (id: number) => void;
 }
 
 const Post = ({
   title,
   content,
-  postid,
-  userid,
+  userName,
+  id,
   owner,
   deletePost,
   editPost,
@@ -29,7 +29,7 @@ const Post = ({
             className="post-delete-btn"
             onClick={(e) => {
               e.preventDefault();
-              deletePost(postid);
+              deletePost(id);
             }}
           >
             <Trash />
@@ -38,7 +38,7 @@ const Post = ({
             className="post-edit-btn"
             onClick={(e) => {
               e.preventDefault();
-              editPost(postid);
+              editPost(id);
             }}
           >
             <Pencil />
@@ -49,8 +49,7 @@ const Post = ({
       <PostContent content={content} />
       <hr></hr>
       <div className="post-user-details">
-        <p>By:{userid}</p>
-        <p>Post:{postid}</p>
+        <p>By : {userName}</p>
       </div>
     </div>
   );

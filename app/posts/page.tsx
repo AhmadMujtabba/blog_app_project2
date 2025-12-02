@@ -1,52 +1,71 @@
 "use client";
 import { useEffect, useState, useContext } from "react";
-import Post from "../../components/post";
-import { AuthContext } from "@/context/auth.context";
+import Post from "../../components/Post";
+import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import AddPostModal from "@/components/addPostModal";
-import EditPostModal from "@/components/editPostModal";
+import AddPostModal from "@/components/AddPostModal";
+import EditPostModal from "@/components/EditPostModal";
 
 interface PostBody {
+  id: number;
   body: string;
   title: string;
-  id: number;
   userId: number;
 }
 
-const Page = () => {
-  const [post, setPost] = useState<PostBody[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showAddPostModal, setShowAddPostModal] = useState<boolean>(false);
-  const [showEditPostModal, setShowEditPostModal] = useState<boolean>(false);
-  const [userPostTitle, setUserPostTitle] = useState<string>("");
-  const [userPostBody, setUserPostBody] = useState<string>("");
-  const [selectedPostForEditId, setSelectedPostForEditId] = useState<
-    number | null
-  >(null);
+type PostEdit = Omit<PostBody, "userId">;
 
+type UserInfo = {
+  id: number;
+  name: string;
+};
+
+const Page = () => {
   const router = useRouter();
   const auth = useContext(AuthContext);
 
+  const [posts, setPosts] = useState<PostBody[]>([]);
+  const [usersInfo, setUsersInfo] = useState<UserInfo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showAddPostModal, setShowAddPostModal] = useState<boolean>(false);
+  const [showEditPostModal, setShowEditPostModal] = useState<boolean>(false);
+  const [selectedPostForEdit, setSelectedPostForEdit] = useState<PostEdit>({
+    id: -1,
+    title: "",
+    body: "",
+  });
+
   const user = auth?.user;
   const setUser = auth?.setUser;
+
+  useEffect(() => {
+    document.body.style.overflow =
+      showAddPostModal || showEditPostModal ? "hidden" : "auto";
+  }, [showAddPostModal, showEditPostModal]);
 
   useEffect(() => {
     if (!user) {
       router.push("/");
       return;
     }
-    const getPost = async () => {
+
+    (async () => {
       try {
+        setLoading(true);
         const res = await fetch("https://jsonplaceholder.typicode.com/posts");
         const data = await res.json();
-        setPost(data);
+        const userInfoRes = await fetch(
+          "https://jsonplaceholder.typicode.com/users"
+        );
+        const usersInfoData = await userInfoRes.json();
+        setUsersInfo(usersInfoData);
+        setPosts(data);
       } catch {
         console.log(Error);
       } finally {
         setLoading(false);
       }
-    };
-    getPost();
+    })();
   }, [user]);
 
   const handleLogout = () => {
@@ -59,71 +78,56 @@ const Page = () => {
     setShowEditPostModal(false);
   };
 
-  const handleCloseAddPostModal = () => {
-    setShowAddPostModal(false);
-  };
-
-  const handleOpenEditPostModal = (postid: number) => {
+  const handleOpenEditPostModal = (postId: number) => {
     setShowEditPostModal(true);
     setShowAddPostModal(false);
-    const postarr = [...post];
-    const postobj = postarr.find((p) => p.id === postid);
-    if (postobj) {
-      setUserPostTitle(postobj.title);
-      setUserPostBody(postobj.body);
-      setSelectedPostForEditId(postobj.id);
+    const updatedPosts = [...posts];
+    const postObj = updatedPosts.find((p) => p.id === postId);
+    if (postObj) {
+      setSelectedPostForEdit({
+        title: postObj.title,
+        body: postObj.body,
+        id: postObj.id,
+      });
     }
   };
 
-  const handleEditedPost = () => {
-    setShowEditPostModal(false);
-    const postid = selectedPostForEditId;
-    let postarr = [...post];
-    const index = postarr.findIndex((p) => p.id === postid);
-    const editedobj = {
-      ...postarr[index],
-      title: userPostTitle,
-      body: userPostBody,
-    };
-    postarr[index] = editedobj;
-    setPost(postarr);
-    alert("Post updated successfully");
-    setSelectedPostForEditId(null);
-  };
-
-  const handleCloseEditPostModal = () => {
-    setShowEditPostModal(false);
-  };
-
-  const handleNewPostTitle = (title: string) => {
-    setUserPostTitle(title);
-  };
-
-  const handleNewPostBody = (body: string) => {
-    setUserPostBody(body);
-  };
-
-  const handleDeletePost = (postid: number) => {
-    if (confirm("Do you want to delete post ?")) {
-      const postarr = [...post];
-      const index = postarr.findIndex((p) => p.id === postid);
-      postarr.splice(index, 1);
-      setPost(postarr);
-    }
-  };
-
-  const handleNewPost = () => {
-    if (user) {
-      const newPost = {
-        userId: Number(user.id),
-        id: Number(post.at(-1)!.id + 1),
-        title: userPostTitle,
-        body: userPostBody,
+  const handleEditedPost = (editedPost: { title: string; body: string }) => {
+    if (selectedPostForEdit.id > 0) {
+      setShowEditPostModal(false);
+      const postId = selectedPostForEdit.id;
+      let updatedPosts = [...posts];
+      const index = updatedPosts.findIndex((p) => p.id === postId);
+      const editedObj = {
+        ...updatedPosts[index],
+        title: editedPost.title,
+        body: editedPost.body,
       };
-      setPost([...post, newPost]);
+      updatedPosts[index] = editedObj;
+      setPosts(updatedPosts);
+      alert("Post updated successfully");
+      setSelectedPostForEdit({ ...selectedPostForEdit, id: -1 });
+    }
+  };
+
+  const handleDeletePost = (postId: number) => {
+    if (confirm("Do you want to delete post ?")) {
+      const updatedPosts = [...posts];
+      const index = updatedPosts.findIndex((p) => p.id === postId);
+      updatedPosts.splice(index, 1);
+      setPosts(updatedPosts);
+    }
+  };
+
+  const handleNewPost = (newPost: { title: string; body: string }) => {
+    if (user) {
+      const newPostObj = {
+        userId: Number(user.id),
+        id: Number(posts.at(-1)!.id + 1),
+        ...newPost,
+      };
+      setPosts([...posts, newPostObj]);
       setShowAddPostModal(false);
-      setUserPostBody("");
-      setUserPostTitle("");
       alert("Post created successfully !");
     }
   };
@@ -140,21 +144,15 @@ const Page = () => {
     <>
       {showAddPostModal && (
         <AddPostModal
-          CloseModal={handleCloseAddPostModal}
-          AddPost={handleNewPost}
-          AddTitle={handleNewPostTitle}
-          AddBody={handleNewPostBody}
+          closeModal={() => setShowAddPostModal(false)}
+          addPost={handleNewPost}
         />
       )}
       {showEditPostModal && (
         <EditPostModal
-          CloseModal={handleCloseEditPostModal}
-          EditPost={handleEditedPost}
-          AddTitle={handleNewPostTitle}
-          AddBody={handleNewPostBody}
-          Title={userPostTitle}
-          Body={userPostBody}
-          PostId={selectedPostForEditId}
+          closeModal={() => setShowEditPostModal(false)}
+          editPost={handleEditedPost}
+          postData={selectedPostForEdit}
         />
       )}
 
@@ -164,9 +162,7 @@ const Page = () => {
         </button>
         {user && (
           <p>
-            <b>
-              HELLO, {user.name.toUpperCase()} {user.id}
-            </b>
+            <b>HELLO, {user.name.toUpperCase()}</b>
           </p>
         )}
         <button className="logout-btn" onClick={handleLogout}>
@@ -174,24 +170,25 @@ const Page = () => {
         </button>
       </div>
 
-      {post.map((post) => {
-        let owner = false;
-        if (Number(user?.id) === post.userId) {
-          owner = true;
-        }
-        return (
+      {posts
+        .slice()
+        .reverse()
+        .map((post) => (
           <Post
             key={post.id}
             title={post.title}
             content={post.body}
-            postid={post.id}
-            userid={post.userId}
-            owner={owner}
+            id={post.id}
+            owner={Number(user?.id) === post.userId}
             deletePost={handleDeletePost}
             editPost={handleOpenEditPostModal}
+            userName={
+              usersInfo.find((user) => user.id === post.userId)?.name ||
+              user?.name ||
+              "Unknown"
+            }
           />
-        );
-      })}
+        ))}
     </>
   );
 };

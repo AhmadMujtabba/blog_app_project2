@@ -1,6 +1,5 @@
 import "../globals.css";
 import { ReactNode } from "react";
-import { AuthProvider } from "@/context/auth.context";
 
 interface LayoutProp {
   readonly children: ReactNode;
