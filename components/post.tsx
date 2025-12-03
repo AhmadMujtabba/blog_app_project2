@@ -1,11 +1,13 @@
 import { Trash, Pencil } from "lucide-react";
 import PostContent from "./PostContent";
 import PostTitle from "./PostTitle";
+import CommentBlock from "./CommentBlock";
 
 interface Post {
   title: string;
   content: string;
   userName: string;
+  authUserData: { id: number; name: string; email: string } | undefined;
   id: number;
   owner: boolean;
   editPost: (id: number) => void;
@@ -16,6 +18,7 @@ const Post = ({
   title,
   content,
   userName,
+  authUserData,
   id,
   owner,
   deletePost,
@@ -47,10 +50,12 @@ const Post = ({
       )}
       <PostTitle title={title} />
       <PostContent content={content} />
-      <hr></hr>
+      <br></br>
       <div className="post-user-details">
         <p>By : {userName}</p>
       </div>
+      <hr></hr>
+      <CommentBlock postId={id} authUserData={authUserData} />
     </div>
   );
 };

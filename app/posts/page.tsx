@@ -121,9 +121,10 @@ const Page = () => {
 
   const handleNewPost = (newPost: { title: string; body: string }) => {
     if (user) {
+      const lastId = posts.at(-1)?.id ?? 0;
       const newPostObj = {
         userId: Number(user.id),
-        id: Number(posts.at(-1)!.id + 1),
+        id: lastId + 1,
         ...newPost,
       };
       setPosts([...posts, newPostObj]);
@@ -156,6 +157,7 @@ const Page = () => {
         />
       )}
 
+
       <div className="post-topbar">
         <button className="add-btn" onClick={handleOpenAddPostModal}>
           Add Post
@@ -187,6 +189,7 @@ const Page = () => {
               user?.name ||
               "Unknown"
             }
+            authUserData={user ? { ...user, id: Number(user?.id) } : undefined}
           />
         ))}
     </>
